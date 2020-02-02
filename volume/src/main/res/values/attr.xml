@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VolumeControlView">
+        <attr name="show" format="boolean"/>
+        <attr name="volume_start_positon" format="integer"/>
+    </declare-styleable>
+</resources>

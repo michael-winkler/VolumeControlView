@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="thumb_color">#2173e5</color>
+    <color name="thumb_background_color">#bed9f9</color>
+    <color name="image_tint_color">#2173e5</color>
+</resources>

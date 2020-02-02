@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/volume_control_view_layout"
+    android:weightSum="1"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seekbar_view"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:max="100"
+        android:rotation="-90"
+        android:layout_width="160dp"
+        android:layout_height="0dp">
+
+    </androidx.appcompat.widget.AppCompatSeekBar>
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/music_on"
+        android:background="?actionBarItemBackground"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        tools:ignore="ContentDescription">
+
+    </ImageView>
+
+</LinearLayout>
