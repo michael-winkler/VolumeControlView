@@ -15,8 +15,9 @@
 
     <com.nmd.volume.VolumeControlView
         android:id="@+id/volumeControlView"
-        android:layout_margin="4dp"
+        app:show="false"
         app:volume_start_positon="50"
+        android:layout_margin="8dp"
         android:layout_centerInParent="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"

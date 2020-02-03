@@ -3,5 +3,8 @@
     <declare-styleable name="VolumeControlView">
         <attr name="show" format="boolean"/>
         <attr name="volume_start_positon" format="integer"/>
+        <attr name="volume_thumb_color" format="color"/>
+        <attr name="volume_thumb_progress_color" format="color"/>
+        <attr name="volume_icon_color" format="color"/>
     </declare-styleable>
 </resources>

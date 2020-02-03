@@ -1,20 +1,20 @@
 package com.nmd.volume
 
-import android.app.Activity
+
+import android.animation.ObjectAnimator
 import android.content.Context
-import android.os.Bundle
-import android.os.Parcelable
+import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
-import com.nmd.volume.util.VolumeUtil
 
 
 class VolumeControlView @JvmOverloads constructor(
@@ -25,6 +25,12 @@ class VolumeControlView @JvmOverloads constructor(
 
     private var seekbar: SeekBar? = null
     private var imageView: ImageView? = null
+    private var extraMargin = 0f
+    private val handlerTask = Handler(Looper.getMainLooper())
+    private var musicOn = true
+    private var volume_thumb_color = R.color.thumb_color
+    private var volume_thumb_progress_color = R.color.thumb_progress_color
+    private var volume_icon_color = R.color.icon_color
 
     private companion object {
         var SHOW = true
@@ -37,6 +43,11 @@ class VolumeControlView @JvmOverloads constructor(
 
     fun show(show: Boolean) {
         SHOW = show
+        if (SHOW) {
+            timerStartHide()
+        } else {
+            timerStopHide()
+        }
         animateViewVisibility(SHOW)
     }
 
@@ -61,6 +72,8 @@ class VolumeControlView @JvmOverloads constructor(
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics)
         )
 
+        addView(inflate(context, R.layout.volume_control_view, null))
+
         if (attrs != null) {
             val a = context.theme.obtainStyledAttributes(
                 attrs,
@@ -68,20 +81,47 @@ class VolumeControlView @JvmOverloads constructor(
                 defStyleAttr,
                 0
             )
+
             try {
-                //SHOW = a.getBoolean(R.styleable.VolumeControlView_show, true)
+                SHOW = a.getBoolean(R.styleable.VolumeControlView_show, true)
                 VOLUME_START_POSITION =
                     a.getInteger(R.styleable.VolumeControlView_volume_start_positon, 50)
+                volume_thumb_color = a.getColor(
+                    R.styleable.VolumeControlView_volume_thumb_color,
+                    ContextCompat.getColor(context, R.color.thumb_color)
+                )
+                volume_thumb_progress_color = a.getColor(
+                    R.styleable.VolumeControlView_volume_thumb_progress_color,
+                    ContextCompat.getColor(context, R.color.thumb_progress_color)
+                )
+                volume_icon_color = a.getColor(
+                    R.styleable.VolumeControlView_volume_icon_color,
+                    ContextCompat.getColor(context, R.color.icon_color)
+                )
             } finally {
                 a.recycle()
             }
         }
-        initCustomView()
-        visibility = if (SHOW) VISIBLE else GONE
+
+        if (!SHOW) {
+            x =
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    56f.plus(extraMargin),
+                    resources.displayMetrics
+                )
+        }
+
+        seekbar = findViewById(R.id.seekbar_view)
+        imageView = findViewById(R.id.image_view)
+
         seekbar?.progress = VOLUME_START_POSITION
         if (VOLUME_START_POSITION == 0) {
-            VolumeUtil.muteSeekbar(imageView, context)
+            muteSeekbar(imageView, context)
         }
+
+        setColors(context, seekbar, imageView)
+        setListeners(context, seekbar, imageView)
 
     }
 
@@ -96,6 +136,16 @@ class VolumeControlView @JvmOverloads constructor(
         )
     }
 
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        val marginLayoutParams = MarginLayoutParams::class.java.cast(layoutParams)
+        val marginRight = marginLayoutParams?.rightMargin ?: 0
+        extraMargin =
+            marginRight / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
+
+    /*
     override fun onSaveInstanceState(): Parcelable {
         val bundle = Bundle()
         bundle.putBoolean("visibility", SHOW)
@@ -113,35 +163,134 @@ class VolumeControlView @JvmOverloads constructor(
         }
         super.onRestoreInstanceState(viewState)
     }
+     */
+
+    fun setListeners(context: Context?, seekBar: SeekBar?, imageView: ImageView?) {
+        var lastPosition: Int = seekBar?.progress ?: 50
+        context?.let {
+
+            val musicOnDrawable: Drawable? = ContextCompat.getDrawable(it, R.drawable.music_on)
+            val musicOffDrawable: Drawable? =
+                ContextCompat.getDrawable(it, R.drawable.music_off)
+
+            if (musicOnDrawable != null) {
+                DrawableCompat.setTint(musicOnDrawable, volume_icon_color)
+            }
+
+            if (musicOffDrawable != null) {
+                DrawableCompat.setTint(musicOffDrawable, volume_icon_color)
+            }
+
+            seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    if (progress == 0) {
+                        musicOn = false
+                        imageView?.setImageDrawable(musicOffDrawable)
+
+                    } else {
+                        if (!musicOn) {
+                            imageView?.setImageDrawable(musicOnDrawable)
+                        }
+                        musicOn = true
+                    }
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+                }
+            })
+
+            imageView?.setOnClickListener {
+                if (musicOn) {
+                    lastPosition = seekBar?.progress ?: 50
+                    animateProgressChange(seekBar, true, lastPosition)
+                    imageView.setImageDrawable(musicOffDrawable)
+                } else {
+                    animateProgressChange(seekBar, false, lastPosition)
+                    imageView.setImageDrawable(musicOnDrawable)
+                }
+                timerStopHide()
+                timerStartHide()
+            }
+        }
+
+    }
+
+    fun muteSeekbar(imageView: ImageView?, context: Context?) {
+        context?.let {
+            musicOn = false
+            val musicOffDrawable: Drawable? =
+                ContextCompat.getDrawable(context, R.drawable.music_off)
+            if (musicOffDrawable != null) {
+                DrawableCompat.setTint(musicOffDrawable, volume_icon_color)
+            }
+            imageView?.setImageDrawable(musicOffDrawable)
+        }
+    }
+
+    private fun animateProgressChange(seekBar: SeekBar?, musicOff: Boolean, lastPosition: Int) {
+        seekBar?.let {
+            val anim: ObjectAnimator = if (musicOff) {
+                ObjectAnimator.ofInt(seekBar, "progress", it.progress, 0)
+            } else {
+                ObjectAnimator.ofInt(seekBar, "progress", 0, lastPosition)
+            }
+
+            anim.duration = 300
+            anim.start()
+        }
+
+    }
+
+    fun setColors(context: Context?, seekBar: SeekBar?, imageView: ImageView?) {
+        context?.let {
+            seekBar?.let {
+                DrawableCompat.setTint(
+                    it.thumb, volume_thumb_color
+                )
+                DrawableCompat.setTint(
+                    it.progressDrawable, volume_thumb_progress_color
+                )
+            }
+
+            imageView?.let {
+                DrawableCompat.setTint(
+                    it.drawable, volume_icon_color
+                )
+            }
+        }
+    }
 
     private fun animateViewVisibility(visible: Boolean) {
         if (!visible) {
-            this.animate().translationX(
+            animate().translationX(
                 TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
-                    64f,
+                    56f.plus(extraMargin),
                     resources.displayMetrics
                 )
             )
         } else {
-            this.animate().translationX(0f)
+            animate().translationX(0f)
         }
     }
 
-    private fun initCustomView() {
-        val layoutInflater: LayoutInflater = LayoutInflater.from(context)
-        val view: LinearLayout = layoutInflater.inflate(
-            R.layout.volume_control_view,
-            (context as Activity).findViewById(android.R.id.content),
-            false
-        ) as LinearLayout
+    private fun timerStartHide() {
+        handlerTask.postDelayed({
+            show(false)
+        }, 3000)
+    }
 
-        seekbar = view.findViewById(R.id.seekbar_view)
-        imageView = view.findViewById(R.id.image_view)
-
-        VolumeUtil.setColors(context, seekbar, imageView)
-        VolumeUtil.setListeners(context, seekbar, imageView)
-        addView(view)
+    private fun timerStopHide() {
+        handlerTask.removeMessages(0)
     }
 
 }
