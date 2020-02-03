@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="VolumeControlView">
-        <attr name="show" format="boolean"/>
-        <attr name="volume_start_positon" format="integer"/>
-        <attr name="volume_thumb_color" format="color"/>
-        <attr name="volume_thumb_progress_color" format="color"/>
-        <attr name="volume_icon_color" format="color"/>
+        <attr name="show" format="boolean" />
+        <attr name="animate_show_from_right_to_left" format="boolean" />
+        <attr name="volume_start_positon" format="integer" />
+        <attr name="volume_thumb_color" format="color" />
+        <attr name="volume_thumb_progress_color" format="color" />
+        <attr name="volume_icon_color" format="color" />
     </declare-styleable>
 </resources>
