@@ -11,6 +11,7 @@ import com.nmd.volume.VolumeControlView
 class MainActivity : AppCompatActivity() {
     private var button: Button? = null
     private var textView: TextView? = null
+    private var textView2: TextView? = null
     private var volumeControlView: VolumeControlView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         button = findViewById(R.id.button)
         textView = findViewById(R.id.textView)
+        textView2 = findViewById(R.id.textView2)
         volumeControlView = findViewById(R.id.volumeControlView)
 
         button?.setOnClickListener {
@@ -26,10 +28,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        volumeControlView?.setOnVolumeControlChangeListener(object :
-            VolumeControlView.OnVolumeControlChangeListener {
-            override fun onChange(position: Int) {
+        volumeControlView?.setOnVolumeControlViewChangeListener(object :
+            VolumeControlView.OnVolumeControlViewChangeListener {
+            override fun onSeekBarChange(position: Int) {
                 textView?.text = "Progress: $position"
+            }
+
+            override fun onShowChange(visible: Boolean) {
+                textView2?.text = "Control View Visible: $visible"
             }
         })
     }

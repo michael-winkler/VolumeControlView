@@ -1,6 +1,5 @@
 package com.nmd.volume
 
-
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -38,7 +37,7 @@ class VolumeControlView @JvmOverloads constructor(
     private var initShow = true
     private var animateShowFromRightToLeft = true
     private var volumeStartPosition = 50
-    var listener: OnVolumeControlChangeListener? = null
+    private var listenerView: OnVolumeControlViewChangeListener? = null
 
     @Suppress("MemberVisibilityCanBePrivate")
     fun show(): Boolean {
@@ -68,20 +67,21 @@ class VolumeControlView @JvmOverloads constructor(
         }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    interface OnVolumeControlChangeListener {
-        fun onChange(position: Int)
+    interface OnVolumeControlViewChangeListener {
+        fun onSeekBarChange(position: Int)
+        fun onShowChange(visible: Boolean)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun setOnVolumeControlChangeListener(onVolumeControlChangeListener: OnVolumeControlChangeListener) {
-        listener = onVolumeControlChangeListener
+    fun setOnVolumeControlViewChangeListener(onVolumeControlViewChangeListener: OnVolumeControlViewChangeListener) {
+        listenerView = onVolumeControlViewChangeListener
     }
 
     init {
         ViewCompat.setBackground(
-            this,
-            ContextCompat.getDrawable(context, R.drawable.round_background)
+            this, ContextCompat.getDrawable(context, R.drawable.round_background)
         )
+
         ViewCompat.setElevation(
             this,
             TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics)
@@ -90,7 +90,7 @@ class VolumeControlView @JvmOverloads constructor(
         addView(inflate(context, R.layout.volume_control_view, null))
 
         if (attrs != null) {
-            val a = context.theme.obtainStyledAttributes(
+            val typedArray = context.theme.obtainStyledAttributes(
                 attrs,
                 R.styleable.VolumeControlView,
                 defStyleAttr,
@@ -98,30 +98,30 @@ class VolumeControlView @JvmOverloads constructor(
             )
 
             try {
-                initShow = a.getBoolean(R.styleable.VolumeControlView_show, initShow)
-                animateShowFromRightToLeft = a.getBoolean(
+                initShow = typedArray.getBoolean(R.styleable.VolumeControlView_show, initShow)
+                animateShowFromRightToLeft = typedArray.getBoolean(
                     R.styleable.VolumeControlView_animate_show_from_right_to_left,
                     animateShowFromRightToLeft
                 )
                 volumeStartPosition =
-                    a.getInteger(
+                    typedArray.getInteger(
                         R.styleable.VolumeControlView_volume_start_positon,
                         volumeStartPosition
                     )
-                volumeThumbColor = a.getColor(
+                volumeThumbColor = typedArray.getColor(
                     R.styleable.VolumeControlView_volume_thumb_color,
                     ContextCompat.getColor(context, R.color.thumb_color)
                 )
-                volumeThumbProgressColor = a.getColor(
+                volumeThumbProgressColor = typedArray.getColor(
                     R.styleable.VolumeControlView_volume_thumb_progress_color,
                     ContextCompat.getColor(context, R.color.thumb_progress_color)
                 )
-                volumeIconColor = a.getColor(
+                volumeIconColor = typedArray.getColor(
                     R.styleable.VolumeControlView_volume_icon_color,
                     ContextCompat.getColor(context, R.color.icon_color)
                 )
             } finally {
-                a.recycle()
+                typedArray.recycle()
             }
         }
 
@@ -146,7 +146,6 @@ class VolumeControlView @JvmOverloads constructor(
 
         setColors()
         setListeners()
-
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -192,7 +191,6 @@ class VolumeControlView @JvmOverloads constructor(
     private fun setListeners() {
         var lastPosition: Int = appCompatSeekBar?.progress ?: 50
         context?.let {
-
             appCompatSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
                     seekBar: SeekBar?,
@@ -207,7 +205,6 @@ class VolumeControlView @JvmOverloads constructor(
                                 R.drawable.music_off
                             )
                         )
-
                     } else {
                         if (!musicOn) {
                             imageView?.setImageDrawable(
@@ -219,7 +216,7 @@ class VolumeControlView @JvmOverloads constructor(
                         }
                         musicOn = true
                     }
-                    listener?.onChange(progress)
+                    listenerView?.onSeekBarChange(progress)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -272,7 +269,6 @@ class VolumeControlView @JvmOverloads constructor(
             } else {
                 ObjectAnimator.ofInt(appCompatSeekBar, "progress", 0, lastPosition)
             }
-
             anim.duration = 300
             anim.start()
         }
@@ -305,9 +301,13 @@ class VolumeControlView @JvmOverloads constructor(
                     getSideFloatValue(),
                     resources.displayMetrics
                 )
-            )
+            ).withEndAction {
+                listenerView?.onShowChange(false)
+            }
         } else {
-            animate().translationX(0f)
+            animate().translationX(0f).withEndAction {
+                listenerView?.onShowChange(true)
+            }
         }
     }
 
@@ -322,7 +322,7 @@ class VolumeControlView @JvmOverloads constructor(
     private fun timerStartHide() {
         handlerTask.postDelayed({
             show(false)
-        }, 3000)
+        }, 2700)
     }
 
     private fun timerStopHide() {

@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@android:color/white">
 
     <Button
         android:id="@+id/button"
-        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="Show or hide control view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:textAllCaps="false" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:text="Progress: 50"
-        android:layout_centerInParent="true"
-        android:textAlignment="center"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Progress: "
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Control View Visible: "
+            android:textAlignment="center" />
+
+    </LinearLayout>
 
     <com.nmd.volume.VolumeControlView
         android:id="@+id/volumeControlView"
-        app:show="false"
-        app:animate_show_from_right_to_left="true"
-        app:volume_start_positon="50"
-        android:layout_margin="8dp"
-        android:layout_centerInParent="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:layout_margin="8dp"
+        app:animate_show_from_right_to_left="true"
+        app:show="false"
+        app:volume_start_positon="50" />
 
 </RelativeLayout>
