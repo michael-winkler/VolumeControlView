@@ -188,6 +188,26 @@ class VolumeControlView @JvmOverloads constructor(
     }
      */
 
+    /*
+    @Override
+    public Bundle onSaveInstanceState() {
+        final Bundle state = super.onSaveInstanceState();
+        state.putInt(HOUR, mTimePicker.getCurrentHour());
+        state.putInt(MINUTE, mTimePicker.getCurrentMinute());
+        state.putBoolean(IS_24_HOUR, mTimePicker.is24HourView());
+        return state;
+    }
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        final int hour = savedInstanceState.getInt(HOUR);
+        final int minute = savedInstanceState.getInt(MINUTE);
+        mTimePicker.setIs24HourView(savedInstanceState.getBoolean(IS_24_HOUR));
+        mTimePicker.setCurrentHour(hour);
+        mTimePicker.setCurrentMinute(minute);
+    }
+     */
+
     private fun setListeners() {
         var lastPosition: Int = appCompatSeekBar?.progress ?: 50
         context?.let {
