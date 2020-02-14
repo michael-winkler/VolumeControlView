@@ -24,8 +24,10 @@ The library "Volume Control View" will provide you a simple volume control view 
 ```
 
 Available xml options:   
-app:volume_start_positon=""
-app:animate_show_from_right_to_left=""
-app:volume_icon_color=""
-app:volume_thumb_color=""
-app:volume_thumb_progress_color=""
+| parameter    | type | example | description |
+| ---          | ---  |  ---    | ---         |
+| app:volume_start_positon="" | Integer |  app:volume_start_positon="50" | Set the start position for the thumb |
+| app:animate_show_from_right_to_left="" | Boolean | app:animate_show_from_right_to_left="true" | If true the start animation will be from screen right to left |
+| app:volume_icon_color="" | Color | app:volume_icon_color="#fff" | Set the color for the volume icon. |
+| app:volume_thumb_color="" | Color | app:volume_thumb_color="#fff" | Set the color for thumb background. |
+| app:volume_thumb_progress_color="" | Color | app:volume_thumb_progress_color="#fff" | Set the color for thumb progress. |
