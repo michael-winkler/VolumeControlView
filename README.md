@@ -32,5 +32,8 @@ Available xml options:
 | app:volume_thumb_color="" | Color | app:volume_thumb_color="#fff" | Set the color for thumb background. |
 | app:volume_thumb_progress_color="" | Color | app:volume_thumb_progress_color="#fff" | Set the color for thumb progress. |
 
+#### Methods:    
+todo
+
 #### Implementation:    
 todo
