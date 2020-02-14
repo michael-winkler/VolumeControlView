@@ -28,8 +28,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        volumeControlView?.setOnVolumeControlViewChangeListener(object :
-            VolumeControlView.OnVolumeControlViewChangeListener {
+        volumeControlView?.setOnVolumeControlViewChangeListener(object : VolumeControlView.OnVolumeControlViewChangeListener {
             override fun onSeekBarChange(position: Int) {
                 textView?.text = "Progress: $position"
             }
