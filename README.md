@@ -31,3 +31,6 @@ Available xml options:
 | app:volume_icon_color="" | Color | app:volume_icon_color="#fff" | Set the color for the volume icon. |
 | app:volume_thumb_color="" | Color | app:volume_thumb_color="#fff" | Set the color for thumb background. |
 | app:volume_thumb_progress_color="" | Color | app:volume_thumb_progress_color="#fff" | Set the color for thumb progress. |
+
+#### Implementation:    
+todo
