@@ -3,20 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@drawable/wallpaper">
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/holder"
         android:layout_centerHorizontal="true"
         android:text="Show or hide control view"
         android:textAllCaps="false" />
 
     <LinearLayout
+        android:id="@+id/holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
+        android:layout_margin="32dp"
         android:orientation="vertical">
 
         <TextView
@@ -24,14 +28,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Progress: "
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Control View Visible: "
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 
@@ -44,7 +50,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="8dp"
         app:animate_show_from_right_to_left="true"
-        app:show="false"
+        app:show="true"
         app:volume_start_positon="50" />
 
 </RelativeLayout>
