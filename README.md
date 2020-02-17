@@ -38,7 +38,7 @@ todo
 #### View the library
 | Show/Hide    | Change Volume |
 | ---      | ---      |
-| ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/image_pixel.png) | ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/image_library.png) |
+| ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/animation1.gif) | ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/animation2.gif) |
 
 #### Implementation:    
 todo
