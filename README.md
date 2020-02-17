@@ -35,5 +35,10 @@ Available xml options:
 #### Methods:    
 todo
 
+#### View the library
+| Show/Hide    | Change Volume |
+| ---      | ---      |
+| ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/image_pixel.png) | ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/image_library.png) |
+
 #### Implementation:    
 todo
