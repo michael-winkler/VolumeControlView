@@ -6,11 +6,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -35,6 +38,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     private var initShow = true
     private var animateShowFromRightToLeft = true
     private var volumeStartPosition = 50
+    private var isCurrentVisible = initShow
     private var listenerView: OnVolumeControlViewChangeListener? = null
     private val displayMetrics = DisplayMetrics()
 
@@ -98,7 +102,15 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
         }
 
         if (!initShow) {
-            x = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getSideFloatValue(), resources.displayMetrics)
+            visibility = View.GONE
+            post {
+                x = if (animateShowFromRightToLeft) {
+                    displayMetrics.widthPixels.toFloat()
+                } else {
+                    0f
+                }
+                visibility = View.VISIBLE
+            }
         } else {
             timerStartHide()
         }
@@ -132,25 +144,44 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
         extraMargin = marginRight / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
-    /*
+
     override fun onSaveInstanceState(): Parcelable {
-        val bundle = Bundle()
-        bundle.putBoolean("visibility", SHOW)
-        bundle.putParcelable("superState", super.onSaveInstanceState())
-        return bundle
+        val state = Bundle()
+
+        state.putBoolean("initShow", initShow)
+        state.putBoolean("isCurrentVisible", isCurrentVisible)
+        state.putBoolean("animateShowFromRightToLeft", animateShowFromRightToLeft)
+        state.putParcelable("superState", super.onSaveInstanceState())
+        return state
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        // 4
         var viewState = state
         if (viewState is Bundle) {
-            SHOW = viewState.getBoolean("visibility", true)
-            show(SHOW)
+            val initShow = viewState.getBoolean("initShow", true)
+            val isCurrentVisible = viewState.getBoolean("isCurrentVisible", initShow)
+            val animateShowFromRightToLeft = viewState.getBoolean("animateShowFromRightToLeft", true)
+            this.initShow = initShow
+            this.isCurrentVisible = isCurrentVisible
+            this.animateShowFromRightToLeft = animateShowFromRightToLeft
+            if (isCurrentVisible) {
+                //TODO ?
+            } else {
+                visibility = View.GONE
+                post {
+                    x = if (animateShowFromRightToLeft) {
+                        displayMetrics.widthPixels.toFloat()
+                    } else {
+                        0f
+                    }
+                    visibility = View.VISIBLE
+                }
+
+            }
             viewState = viewState.getParcelable("superState")
         }
         super.onRestoreInstanceState(viewState)
     }
-     */
 
     /*
     @Override
@@ -256,10 +287,12 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     private fun animateViewVisibility(visible: Boolean) {
         if (!visible) {
+            isCurrentVisible = false
             animate().translationX(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getSideFloatValue(), resources.displayMetrics)).withEndAction {
                 listenerView?.onShowChange(false)
             }
         } else {
+            isCurrentVisible = true
             animate().translationX(0f).withEndAction {
                 listenerView?.onShowChange(true)
             }
@@ -270,7 +303,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
         return if (animateShowFromRightToLeft) {
             56f.plus(extraMargin)
         } else {
-            (-56f).minus(-extraMargin)
+            (-56f).plus(-extraMargin)
         }
     }
 
@@ -284,7 +317,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
         handlerTask.removeMessages(0)
     }
 
-    private fun isPortraitMode():Boolean {
+    private fun isPortraitMode(): Boolean {
         return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
