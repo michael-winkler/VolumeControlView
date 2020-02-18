@@ -32,6 +32,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     private var extraMargin = 0f
     private val handlerTask = Handler(Looper.getMainLooper())
     private var musicOn = true
+	//@ColorInt
     private var volumeThumbColor = R.color.thumb_color
     private var volumeThumbProgressColor = R.color.thumb_progress_color
     private var volumeIconColor = R.color.icon_color
