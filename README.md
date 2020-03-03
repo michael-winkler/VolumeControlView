@@ -66,7 +66,6 @@ Available xml options:
 | name    | type | example | description |
 | ---     | ---  |  ---    | ---         |
 | setOnVolumeControlViewChangeListener(onVolumeControlViewChangeListener: OnVolumeControlViewChangeListener?)  | OnVolumeControlViewChangeListener | volumeControlView.setOnVolumeControlViewChangeListener(onVolumeControlViewChangeListener) | Set the listener for the volume control view. |
-| ---     | ---  |  ---    | ---         |
 
 #### View the library
 | Show/Hide    | Change Volume |
