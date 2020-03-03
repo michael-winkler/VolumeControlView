@@ -72,3 +72,6 @@ Available xml options:
 | Show/Hide    | Change Volume |
 | ---      | ---      |
 | ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/animation1.gif) | ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/animation2.gif) |
+
+#### Known bugs/issues
+You can find [here](https://github.com/Mika-89/VolumeControlView/issues) the known bugs/issues
