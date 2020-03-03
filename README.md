@@ -41,4 +41,15 @@ todo
 | ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/animation1.gif) | ![Image description](https://github.com/Mika-89/VolumeControlView/blob/master/images/animation2.gif) |
 
 #### Implementation:    
-todo
+```xml
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+```xml
+implementation 'com.github.Mika-89:VolumeControlView:master-SNAPSHOT'
+```
