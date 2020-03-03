@@ -32,7 +32,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     private var extraMargin = 0f
     private val handlerTask = Handler(Looper.getMainLooper())
     private var musicOn = true
-	//@ColorInt
     private var volumeThumbColor = R.color.thumb_color
     private var volumeThumbProgressColor = R.color.thumb_progress_color
     private var volumeIconColor = R.color.icon_color
@@ -43,12 +42,19 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     private var listenerView: OnVolumeControlViewChangeListener? = null
     private val displayMetrics = DisplayMetrics()
 
-    @Suppress("MemberVisibilityCanBePrivate")
+    /**
+     * Returns true if the volume control view is currently shown.
+     */
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun show(): Boolean {
         return initShow
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
+    /**
+     * Show or hide the volume control view.
+     * @param show Boolean
+     */
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun show(show: Boolean) {
         initShow = show
         if (initShow) {
@@ -60,25 +66,45 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     /**
-     * Show or hide the volume control view.
+     * Set the start position of the volume control view seekbar.
      */
-    @Suppress("MemberVisibilityCanBePrivate")
-    var startPosition: Int
-        get() = volumeStartPosition
-        set(position) {
-            volumeStartPosition = position
-            appCompatSeekBar?.progress = volumeStartPosition
-        }
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
+    fun startPosition(position: Int) {
+        volumeStartPosition = position
+        appCompatSeekBar?.progress = position
+    }
 
-    @Suppress("MemberVisibilityCanBePrivate")
+    /**
+     * Get the start position of the volume control view seekbar.
+     */
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
+    fun startPosition(): Int {
+        return volumeStartPosition
+    }
+
+    /**
+     * The interface to listen to volume control view changes.
+     */
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
     interface OnVolumeControlViewChangeListener {
         fun onSeekBarChange(position: Int)
         fun onShowChange(visible: Boolean)
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    fun setOnVolumeControlViewChangeListener(onVolumeControlViewChangeListener: OnVolumeControlViewChangeListener) {
+    /**
+     * Set the listener for the volume control view.
+     */
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
+    fun setOnVolumeControlViewChangeListener(onVolumeControlViewChangeListener: OnVolumeControlViewChangeListener?) {
         listenerView = onVolumeControlViewChangeListener
+    }
+
+    /**
+     * Delete the listener from the volume control view.
+     */
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
+    fun deleteOnVolumeControlViewChangeListener() {
+        listenerView = null
     }
 
     init {
@@ -183,26 +209,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
         }
         super.onRestoreInstanceState(viewState)
     }
-
-    /*
-    @Override
-    public Bundle onSaveInstanceState() {
-        final Bundle state = super.onSaveInstanceState();
-        state.putInt(HOUR, mTimePicker.getCurrentHour());
-        state.putInt(MINUTE, mTimePicker.getCurrentMinute());
-        state.putBoolean(IS_24_HOUR, mTimePicker.is24HourView());
-        return state;
-    }
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        final int hour = savedInstanceState.getInt(HOUR);
-        final int minute = savedInstanceState.getInt(MINUTE);
-        mTimePicker.setIs24HourView(savedInstanceState.getBoolean(IS_24_HOUR));
-        mTimePicker.setCurrentHour(hour);
-        mTimePicker.setCurrentMinute(minute);
-    }
-     */
 
     private fun setListeners() {
         var lastPosition: Int = appCompatSeekBar?.progress ?: 50
