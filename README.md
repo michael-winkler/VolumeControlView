@@ -1,7 +1,15 @@
-# VolumeControlView
+<h1 align="center">
+    VolumeControlView
+</h1>
+
+<p align="center">
+	<a href="https://github.com/Mika-89/VolumeControlView/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/Mika-89/VolumeControlView?style=flat"></a>
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/Mika-89/VolumeControlView">
+</p>
 
 [![API](https://img.shields.io/badge/API-16%2B-orange.svg?style=flat)](https://android-arsenal.com/api?level=16)
 [![License Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=true)](http://www.apache.org/licenses/LICENSE-2.0)
+
 
 #### Description:    
 The library "Volume Control View" will provide you a simple volume control view widget like Pixel phones from Google use it.
