@@ -27,6 +27,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:text="Progress: "
             android:textAlignment="center"
             android:textColor="@android:color/white" />
@@ -35,6 +36,7 @@
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:text="Control View Visible: "
             android:textAlignment="center"
             android:textColor="@android:color/white" />
@@ -50,7 +52,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="8dp"
         app:animate_show_from_right_to_left="true"
-        app:show="true"
+        app:show="false"
         app:volume_start_positon="50" />
 
 </RelativeLayout>

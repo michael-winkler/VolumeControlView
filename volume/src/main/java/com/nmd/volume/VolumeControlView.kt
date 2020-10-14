@@ -1,7 +1,6 @@
 package com.nmd.volume
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
@@ -12,11 +11,15 @@ import android.os.Looper
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.SeekBar
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -24,17 +27,32 @@ import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
 
 
-@SuppressLint("ResourceAsColor")
+/**
+ * This class will create a new Volume Control View object.
+ * You can add the class direct in your xml layout with follwing properties:
+ * - animate_show_from_right_to_left | boolean
+ * - volume_start_positon | integer
+ * - volume_thumb_color | color
+ * - volume_thumb_progress_color | color
+ * - volume_icon_color | color
+ */
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class VolumeControlView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
-
     private var appCompatSeekBar: AppCompatSeekBar? = null
     private var imageView: ImageView? = null
     private var extraMargin = 0f
     private val handlerTask = Handler(Looper.getMainLooper())
     private var musicOn = true
-    private var volumeThumbColor = R.color.thumb_color
-    private var volumeThumbProgressColor = R.color.thumb_progress_color
-    private var volumeIconColor = R.color.icon_color
+
+    @ColorInt
+    private var volumeThumbColor = 0
+
+    @ColorInt
+    private var volumeThumbProgressColor = 0
+
+    @ColorInt
+    private var volumeIconColor = 0
+
     private var initShow = true
     private var animateShowFromRightToLeft = true
     private var volumeStartPosition = 50
@@ -45,7 +63,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     /**
      * Returns true if the volume control view is currently shown.
      */
-    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun show(): Boolean {
         return initShow
     }
@@ -54,7 +71,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
      * Show or hide the volume control view.
      * @param show Boolean
      */
-    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun show(show: Boolean) {
         initShow = show
         if (initShow) {
@@ -68,7 +84,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     /**
      * Set the start position of the volume control view seekbar.
      */
-    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun startPosition(position: Int) {
         volumeStartPosition = position
         appCompatSeekBar?.progress = position
@@ -77,15 +92,82 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     /**
      * Get the start position of the volume control view seekbar.
      */
-    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun startPosition(): Int {
         return volumeStartPosition
     }
 
     /**
+     * Sets the volume thumb color for this volume control view.
+     */
+    fun setThumbColor(thumbColor: Int) {
+        volumeThumbColor = thumbColor
+        setColors()
+    }
+
+    /**
+     * Sets the volume thumb color resource for this volume control view.
+     */
+    fun setThumbColorResource(@ColorRes thumbColor: Int) {
+        volumeThumbColor = ContextCompat.getColor(context, thumbColor)
+        setColors()
+    }
+
+    /**
+     * Gets the volume thumb color for this volume control view.
+     */
+    fun getThumbColor(): Int {
+        return volumeThumbColor
+    }
+
+    /**
+     * Sets the volume thumb progress color for this volume control view.
+     */
+    fun setThumbProgressColor(thumbProgressColor: Int) {
+        volumeThumbProgressColor = thumbProgressColor
+        setColors()
+    }
+
+    /**
+     * Sets the volume thumb progress color resource for this volume control view.
+     */
+    fun setThumbProgressColorResource(@ColorRes thumbProgressColor: Int) {
+        volumeThumbProgressColor = ContextCompat.getColor(context, thumbProgressColor)
+        setColors()
+    }
+
+    /**
+     * Gets the volume thumb progress color for this volume control view.
+     */
+    fun getThumbProgressColor(): Int {
+        return volumeThumbProgressColor
+    }
+
+    /**
+     * Sets the volume icon color for this volume control view.
+     */
+    fun setIconColor(iconColor: Int) {
+        volumeIconColor = iconColor
+        setColors()
+    }
+
+    /**
+     * Sets the volume icon color resource for this volume control view.
+     */
+    fun setIconColorResource(@ColorRes iconColor: Int) {
+        volumeIconColor = ContextCompat.getColor(context, iconColor)
+        setColors()
+    }
+
+    /**
+     * Gets the volume icon color for this volume control view.
+     */
+    fun getIconColor(): Int {
+        return volumeIconColor
+    }
+
+    /**
      * The interface to listen to volume control view changes.
      */
-    @Suppress("MemberVisibilityCanBePrivate", "unused")
     interface OnVolumeControlViewChangeListener {
         fun onSeekBarChange(position: Int)
         fun onShowChange(visible: Boolean)
@@ -94,7 +176,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     /**
      * Set the listener for the volume control view.
      */
-    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun setOnVolumeControlViewChangeListener(onVolumeControlViewChangeListener: OnVolumeControlViewChangeListener?) {
         listenerView = onVolumeControlViewChangeListener
     }
@@ -102,7 +183,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     /**
      * Delete the listener from the volume control view.
      */
-    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun deleteOnVolumeControlViewChangeListener() {
         listenerView = null
     }
@@ -111,20 +191,50 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         ViewCompat.setBackground(this, ContextCompat.getDrawable(context, R.drawable.round_background))
         ViewCompat.setElevation(this, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics))
-        addView(inflate(context, R.layout.volume_control_view, null))
+
+        val view: View? = LayoutInflater.from(context).inflate(R.layout.volume_control_view, context.findViewById(android.R.id.content), false)
+        view?.let {
+            addView(it)
+        }
 
         if (attrs != null) {
-            val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.VolumeControlView, defStyleAttr, 0)
-
-            try {
-                initShow = typedArray.getBoolean(R.styleable.VolumeControlView_show, true)
-                animateShowFromRightToLeft = typedArray.getBoolean(R.styleable.VolumeControlView_animate_show_from_right_to_left, true)
-                volumeStartPosition = typedArray.getInteger(R.styleable.VolumeControlView_volume_start_positon, 50)
-                volumeThumbColor = typedArray.getColor(R.styleable.VolumeControlView_volume_thumb_color, ContextCompat.getColor(context, R.color.thumb_color))
-                volumeThumbProgressColor = typedArray.getColor(R.styleable.VolumeControlView_volume_thumb_progress_color, ContextCompat.getColor(context, R.color.thumb_progress_color))
-                volumeIconColor = typedArray.getColor(R.styleable.VolumeControlView_volume_icon_color, ContextCompat.getColor(context, R.color.icon_color))
-            } finally {
-                typedArray.recycle()
+            context.theme.obtainStyledAttributes(attrs, R.styleable.VolumeControlView, defStyleAttr, 0).apply {
+                try {
+                    initShow = try {
+                        getBoolean(R.styleable.VolumeControlView_show, true)
+                    } catch (e: Exception) {
+                        true
+                    }
+                    animateShowFromRightToLeft = try {
+                        getBoolean(R.styleable.VolumeControlView_animate_show_from_right_to_left, true)
+                    } catch (e: Exception) {
+                        true
+                    }
+                    volumeStartPosition = try {
+                        getInteger(R.styleable.VolumeControlView_volume_start_positon, 50)
+                    } catch (e: Exception) {
+                        50
+                    }
+                    volumeThumbColor = try {
+                        getColor(R.styleable.VolumeControlView_volume_thumb_color, ContextCompat.getColor(context, R.color.thumb_color))
+                    } catch (e: Exception) {
+                        ContextCompat.getColor(context, R.color.thumb_color)
+                    }
+                    volumeThumbProgressColor = try {
+                        getColor(R.styleable.VolumeControlView_volume_thumb_progress_color, ContextCompat.getColor(context, R.color.thumb_progress_color))
+                    } catch (e: Exception) {
+                        ContextCompat.getColor(context, R.color.thumb_progress_color)
+                    }
+                    volumeIconColor = try {
+                        getColor(R.styleable.VolumeControlView_volume_icon_color, ContextCompat.getColor(context, R.color.icon_color))
+                    } catch (e: Exception) {
+                        ContextCompat.getColor(context, R.color.icon_color)
+                    }
+                } catch (e: Exception) {
+                    Log.e("VCV", "Volume control view was not able to load styles from xml.")
+                } finally {
+                    recycle()
+                }
             }
         }
 
@@ -174,7 +284,6 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     override fun onSaveInstanceState(): Parcelable {
         val state = Bundle()
-
         state.putBoolean("initShow", initShow)
         state.putBoolean("isCurrentVisible", isCurrentVisible)
         state.putBoolean("animateShowFromRightToLeft", animateShowFromRightToLeft)
@@ -212,60 +321,56 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     private fun setListeners() {
         var lastPosition: Int = appCompatSeekBar?.progress ?: 50
-        context?.let {
-            appCompatSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    if (progress == 0) {
-                        musicOn = false
-                        imageView?.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.music_off))
-                    } else {
-                        if (!musicOn) {
-                            imageView?.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.music_on))
-                        }
-                        musicOn = true
-                    }
-                    listenerView?.onSeekBarChange(progress)
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    timerStopHide()
-                }
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    timerStartHide()
-                }
-            })
-
-            imageView?.setOnClickListener {
-                if (musicOn) {
-                    lastPosition = appCompatSeekBar?.progress ?: 50
-                    animateProgressChange(true, lastPosition)
-                    imageView?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.music_off))
+        val ctx = context ?: return
+        appCompatSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (progress == 0) {
+                    musicOn = false
+                    imageView?.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.music_off))
                 } else {
-                    animateProgressChange(false, lastPosition)
-                    imageView?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.music_on))
+                    if (!musicOn) {
+                        imageView?.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.music_on))
+                    }
+                    musicOn = true
                 }
+                listenerView?.onSeekBarChange(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 timerStopHide()
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 timerStartHide()
             }
-        }
+        })
 
+        imageView?.setOnClickListener {
+            if (musicOn) {
+                lastPosition = appCompatSeekBar?.progress ?: 50
+                animateProgressChange(true, lastPosition)
+                imageView?.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.music_off))
+            } else {
+                animateProgressChange(false, lastPosition)
+                imageView?.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.music_on))
+            }
+            timerStopHide()
+            timerStartHide()
+        }
     }
 
     private fun muteAppCompatSeekBar() {
-        context?.let {
-            musicOn = false
-            imageView?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.music_off))
-        }
+        val ctx = context ?: return
+        musicOn = false
+        imageView?.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.music_off))
     }
 
-    @SuppressLint("ObjectAnimatorBinding")
     private fun animateProgressChange(musicOff: Boolean, lastPosition: Int) {
         appCompatSeekBar?.let {
             val anim: ObjectAnimator = if (musicOff) {
-                ObjectAnimator.ofInt(appCompatSeekBar, "progress", it.progress, 0)
+                ObjectAnimator.ofInt(it, "progress", it.progress, 0)
             } else {
-                ObjectAnimator.ofInt(appCompatSeekBar, "progress", 0, lastPosition)
+                ObjectAnimator.ofInt(it, "progress", 0, lastPosition)
             }
             anim.duration = 300
             anim.start()
@@ -281,11 +386,9 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun setColors() {
-        context?.let {
-            appCompatSeekBar?.let {
-                DrawableCompat.setTint(it.thumb, volumeThumbColor)
-                DrawableCompat.setTint(it.progressDrawable, volumeThumbProgressColor)
-            }
+        appCompatSeekBar?.let {
+            DrawableCompat.setTint(it.thumb, volumeThumbColor)
+            DrawableCompat.setTint(it.progressDrawable, volumeThumbProgressColor)
         }
         imageView?.let {
             ImageViewCompat.setImageTintList(it, ColorStateList.valueOf(volumeIconColor))
@@ -325,7 +428,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun isPortraitMode(): Boolean {
-        return resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        return resources?.configuration?.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
 }
