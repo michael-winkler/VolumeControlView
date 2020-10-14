@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.Nullable
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -83,6 +84,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Set the start position of the volume control view seekbar.
+     * @param position Int
      */
     fun startPosition(position: Int) {
         volumeStartPosition = position
@@ -98,6 +100,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Sets the volume thumb color for this volume control view.
+     * @param thumbColor Int
      */
     fun setThumbColor(thumbColor: Int) {
         volumeThumbColor = thumbColor
@@ -106,6 +109,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Sets the volume thumb color resource for this volume control view.
+     * @param thumbColor ColorRes
      */
     fun setThumbColorResource(@ColorRes thumbColor: Int) {
         volumeThumbColor = ContextCompat.getColor(context, thumbColor)
@@ -121,6 +125,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Sets the volume thumb progress color for this volume control view.
+     * @param thumbProgressColor Int
      */
     fun setThumbProgressColor(thumbProgressColor: Int) {
         volumeThumbProgressColor = thumbProgressColor
@@ -129,6 +134,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Sets the volume thumb progress color resource for this volume control view.
+     * @param thumbProgressColor ColorRes
      */
     fun setThumbProgressColorResource(@ColorRes thumbProgressColor: Int) {
         volumeThumbProgressColor = ContextCompat.getColor(context, thumbProgressColor)
@@ -144,6 +150,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Sets the volume icon color for this volume control view.
+     * @param iconColor Int
      */
     fun setIconColor(iconColor: Int) {
         volumeIconColor = iconColor
@@ -152,6 +159,7 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Sets the volume icon color resource for this volume control view.
+     * @param iconColor ColorRes
      */
     fun setIconColorResource(@ColorRes iconColor: Int) {
         volumeIconColor = ContextCompat.getColor(context, iconColor)
@@ -175,8 +183,9 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     /**
      * Set the listener for the volume control view.
+     * @param onVolumeControlViewChangeListener OnVolumeControlViewChangeListener
      */
-    fun setOnVolumeControlViewChangeListener(onVolumeControlViewChangeListener: OnVolumeControlViewChangeListener?) {
+    fun setOnVolumeControlViewChangeListener(@Nullable onVolumeControlViewChangeListener: OnVolumeControlViewChangeListener?) {
         listenerView = onVolumeControlViewChangeListener
     }
 
@@ -275,12 +284,10 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-
         val marginLayoutParams = MarginLayoutParams::class.java.cast(layoutParams)
         val marginRight = marginLayoutParams?.rightMargin ?: 0
         extraMargin = marginRight / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
-
 
     override fun onSaveInstanceState(): Parcelable {
         val state = Bundle()
