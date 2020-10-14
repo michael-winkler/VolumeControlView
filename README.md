@@ -71,11 +71,13 @@ Available xml options:
 | startPosition(position: Int)  | fun | volumeControlView.startPosition(60) | Set the start position of the volume control view seekbar. |
 | setThumbColor(thumbColor: Int) | fun | volumeControlView.setThumbColor(Color.WHITE) | Sets the volume thumb color for this volume control view. |
 | setThumbColorResource(@ColorRes thumbColor: Int) | fun | volumeControlView.setThumbColor(R.color.YOUR_COLOR) | Sets the volume thumb color resource for this volume control view. |
+| getThumbColor() | Int | volumeControlView.getThumbColor() | Gets the volume thumb color for this volume control view. |
 | setThumbProgressColor(thumbProgressColor: Int) | fun | volumeControlView.setThumbProgressColor(Color.WHITE) | Sets the volume thumb progress color for this volume control view. |
 | setThumbProgressColorResource(@ColorRes thumbProgressColor: Int) | fun | volumeControlView.setThumbProgressColorResource(R.color.YOUR_COLOR) | Sets the volume thumb progress color resource for this volume control view. |
+| getThumbProgressColor() | Int | volumeControlView.getThumbProgressColor() | Gets the volume thumb progress color for this volume control view. |
 | setIconColor(iconColor: Int) | fun | volumeControlView.setIconColor(Color.WHITE) | Sets the volume icon color for this volume control view. |
 | setIconColorResource(iconColor: Int) | fun | volumeControlView.setIconColorResource(R.color.YOUR_COLOR) | Sets the volume icon color resource for this volume control view. |
-
+| getIconColor() | Int | volumeControlView.getIconColor() | Gets the volume icon color for this volume control view. |
 
 ##### Interface
 | name    | type | example | description |
