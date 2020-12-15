@@ -5,10 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Parcelable
+import android.os.*
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
@@ -197,7 +194,12 @@ class VolumeControlView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     init {
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            (context as Activity).display?.getRealMetrics(displayMetrics)
+        } else {
+            @Suppress("DEPRECATION")
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        }
         ViewCompat.setBackground(this, ContextCompat.getDrawable(context, R.drawable.round_background))
         ViewCompat.setElevation(this, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics))
 
